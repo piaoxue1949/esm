@@ -105,41 +105,41 @@ type Migrator struct {
 type Config struct {
 
 	// config options
-	SourceEs            string `short:"s" long:"source"  description:"source elasticsearch instance, ie: http://localhost:9200"`
-	Query               string `short:"q" long:"query"  description:"query against source elasticsearch instance, filter data before migrate, ie: name:medcl"`
-	TargetEs            string `short:"d" long:"dest"    description:"destination elasticsearch instance, ie: http://localhost:9201"`
-	SourceEsAuthStr     string `short:"m" long:"source_auth"  description:"basic auth of source elasticsearch instance, ie: user:pass"`
-	TargetEsAuthStr     string `short:"n" long:"dest_auth"  description:"basic auth of target elasticsearch instance, ie: user:pass"`
-	DocBufferCount      int    `short:"c" long:"count"   description:"number of documents at a time: ie \"size\" in the scroll request" default:"10000"`
-	Workers             int    `short:"w" long:"workers" description:"concurrency number for bulk workers" default:"1"`
-	BulkSizeInMB        int    `short:"b" long:"bulk_size" description:"bulk size in MB" default:"5"`
+	SourceEs            string `short:"s" long:"source"  description:"源elasticsearch实例, ie: http://localhost:9200"`
+	Query               string `short:"q" long:"query"  description:"根据源elasticsearch实例进行查询，在迁移之前过滤数据, ie: name:medcl"`
+	TargetEs            string `short:"d" long:"dest"    description:"目标elasticsearch实例, ie: http://localhost:9201"`
+	SourceEsAuthStr     string `short:"m" long:"source_auth"  description:"源elasticsearch实例的基本认证, ie: user:pass"`
+	TargetEsAuthStr     string `short:"n" long:"dest_auth"  description:"目标elasticsearch实例的基本验证, ie: user:pass"`
+	DocBufferCount      int    `short:"c" long:"count"   description:"在scroll请求中每次文档的数量: ie:10000 " default:"10000"`
+	Workers             int    `short:"w" long:"workers" description:"批量工作进程数量" default:"1"`
+	BulkSizeInMB        int    `short:"b" long:"bulk_size" description:"bulk size，单位MB" default:"5"`
 	ScrollTime          string `short:"t" long:"time"    description:"scroll time" default:"1m"`
-	ScrollSliceSize     int    `long:"sliced_scroll_size"    description:"size of sliced scroll, to make it work, the size should be > 1" default:"1"`
-	RecreateIndex       bool   `short:"f" long:"force"   description:"delete destination index before copying"`
-	CopyAllIndexes      bool   `short:"a" long:"all"     description:"copy indexes starting with . and _"`
-	CopyIndexSettings   bool   `long:"copy_settings"          description:"copy index settings from source"`
-	CopyIndexMappings   bool   `long:"copy_mappings"          description:"copy index mappings from source"`
-	ShardsCount         int    `long:"shards"            description:"set a number of shards on newly created indexes"`
-	SourceIndexNames    string `short:"x" long:"src_indexes" description:"indexes name to copy,support regex and comma separated list" default:"_all"`
-	TargetIndexName     string `short:"y" long:"dest_index" description:"indexes name to save, allow only one indexname, original indexname will be used if not specified" default:""`
-	OverrideTypeName    string `short:"u" long:"type_override" description:"override type name" default:""`
-	WaitForGreen        bool   `long:"green"             description:"wait for both hosts cluster status to be green before dump. otherwise yellow is okay"`
-	LogLevel            string `short:"v" long:"log"            description:"setting log level,options:trace,debug,info,warn,error"  default:"INFO"`
-	DumpOutFile         string `short:"o" long:"output_file"            description:"output documents of source index into local file" `
-	DumpInputFile       string `short:"i" long:"input_file"            description:"indexing from local dump file" `
-	InputFileType       string `long:"input_file_type"                 description:"the data type of input file, options: dump, json_line, json_array, log_line" default:"dump" `
-	SourceProxy         string `long:"source_proxy"            description:"set proxy to source http connections, ie: http://127.0.0.1:8080"`
-	TargetProxy         string `long:"dest_proxy"            description:"set proxy to target http connections, ie: http://127.0.0.1:8080"`
-	Refresh             bool   `long:"refresh"                 description:"refresh after migration finished"`
-	Fields              string `long:"fields"                 description:"filter source fields, comma separated, ie: col1,col2,col3,..." `
-	RenameFields        string `long:"rename"                 description:"rename source fields, comma separated, ie: _type:type, name:myname" `
-	LogstashEndpoint    string `short:"l"  long:"logstash_endpoint"    description:"target logstash tcp endpoint, ie: 127.0.0.1:5055" `
-	LogstashSecEndpoint bool   `long:"secured_logstash_endpoint"    description:"target logstash tcp endpoint was secured by TLS" `
+	ScrollSliceSize     int    `long:"sliced_scroll_size"    description:"scroll切片的大小，要使它工作，大小应该是> 1" default:"1"`
+	RecreateIndex       bool   `short:"f" long:"force"   description:"复制前删除目标索引"`
+	CopyAllIndexes      bool   `short:"a" long:"all"     description:"复制所有索引(包括.和_开始的)"`
+	CopyIndexSettings   bool   `long:"copy_settings"          description:"从源复制索引settings"`
+	CopyIndexMappings   bool   `long:"copy_mappings"          description:"从源复制索引mappings"`
+	ShardsCount         int    `long:"shards"            description:"在新创建的索引上设置多个分片"`
+	SourceIndexNames    string `short:"x" long:"src_indexes" description:"要复制的索引名称，支持正则表达式和逗号分隔列表" default:"_all"`
+	TargetIndexName     string `short:"y" long:"dest_index" description:"要保存的索引名称，只允许一个索引名，如果没有指定，将使用原始的索引名" default:""`
+	OverrideTypeName    string `short:"u" long:"type_override" description:"覆盖type名称" default:""`
+	WaitForGreen        bool   `long:"green"             description:"等待两台主机的集群状态都变为绿色后，再执行转储操作。否则黄色就可以了"`
+	LogLevel            string `short:"v" long:"log"            description:"设置日志级别,选择:trace,debug,info,warn,error"  default:"INFO"`
+	DumpOutFile         string `short:"o" long:"output_file"            description:"源索引导出的文件名称" `
+	DumpInputFile       string `short:"i" long:"input_file"            description:"要导入到索引的文件名称" `
+	InputFileType       string `long:"input_file_type"                 description:"输入文件的数据类型，选项:dump、json_line、json_array、log_line" default:"dump" `
+	SourceProxy         string `long:"source_proxy"            description:"源HTTP代理, ie: http://127.0.0.1:8080"`
+	TargetProxy         string `long:"dest_proxy"            description:"目标HTTP代理, ie: http://127.0.0.1:8080"`
+	Refresh             bool   `long:"refresh"                 description:"迁移完成后刷新"`
+	Fields              string `long:"fields"                 description:"源字段筛选，逗号分隔, ie: col1,col2,col3,..." `
+	RenameFields        string `long:"rename"                 description:"重命名源字段，逗号分隔, ie: _type:type, name:myname" `
+	LogstashEndpoint    string `short:"l"  long:"logstash_endpoint"    description:"目标logstash的TCP地址, ie: 127.0.0.1:5055" `
+	LogstashSecEndpoint bool   `long:"secured_logstash_endpoint"    description:"由TLS保护的目标logstash的tcp地址" `
 	//TestLevel  			string `long:"test_level"    description:"target logstash tcp endpoint was secured by TLS" `
 	//TestEnvironment  string `long:"test_environment"    description:"target logstash tcp endpoint was secured by TLS" `
 
-	RepeatOutputTimes int  `long:"repeat_times"            description:"repeat the data from source N times to dest output, use align with parameter regenerate_id to amplify the data size "`
-	RegenerateID      bool `short:"r" long:"regenerate_id"   description:"regenerate id for documents, this will override the exist document id in data source"`
+	RepeatOutputTimes int  `long:"repeat_times"            description:"从源重复数据N次至dest输出，需要使用regenerate_id重新生成id"`
+	RegenerateID      bool `short:"r" long:"regenerate_id"   description:"为文档重新生成id，这将覆盖数据源中现有的文档id"`
 }
 
 type Auth struct {

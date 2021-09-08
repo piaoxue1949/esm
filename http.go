@@ -17,17 +17,17 @@ limitations under the License.
 package main
 
 import (
-	"encoding/json"
-	"fmt"
-	"net/http"
-	"github.com/parnurzeal/gorequest"
-	log "github.com/cihub/seelog"
-	"io/ioutil"
-	"io"
-	"errors"
 	"bytes"
-	"net/url"
 	"crypto/tls"
+	"encoding/json"
+	"errors"
+	"fmt"
+	log "github.com/cihub/seelog"
+	"github.com/parnurzeal/gorequest"
+	"io"
+	"io/ioutil"
+	"net/http"
+	"net/url"
 	"strings"
 )
 
@@ -45,8 +45,8 @@ func Get(url string,auth *Auth,proxy string) (*http.Response, string, []error) {
 		request.SetBasicAuth(auth.User,auth.Pass)
 	}
 
-	request.Header["Content-Type"]= "application/json"
-	//request.Header.Set("Content-Type", "application/json")
+	//request.Header["Content-Type"]= "application/json"
+	request.Header.Set("Content-Type", "application/json")
 
 	if(len(proxy)>0){
 		request.Proxy(proxy)
@@ -69,8 +69,8 @@ func Post(url string,auth *Auth, body string,proxy string)(*http.Response, strin
 		request.SetBasicAuth(auth.User,auth.Pass)
 	}
 
-	//request.Header.Set("Content-Type", "application/json")
-	request.Header["Content-Type"]="application/json"
+	request.Header.Set("Content-Type", "application/json")
+	//request.Header["Content-Type"]="application/json"
 	
 	if(len(proxy)>0){
 		request.Proxy(proxy)
